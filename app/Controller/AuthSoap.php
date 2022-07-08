@@ -18,19 +18,29 @@ class AuthSoap extends Controller
 
     public function store()
     {
-        $loginAd =  $this->validarUsuarioAD($_REQUEST['usuario'], $_REQUEST['password']);
+        /* 
 
-        if ($loginAd == true) {
+        Usei uma autenticação para SOAP como mais uma camada de segurança para liberação do wifi somente para um grupo de funcionarios porém a lógica é livre.
+        Basta enviar a resposta para o watchguard com o hash para a validação.
 
-            $_REQUEST['ts'];
-            $_REQUEST['sn'];
-            $_REQUEST['mac'];
+        https://www.watchguard.com/help/docs/help-center/en-US/Content/en-US/Fireware/authentication/hotspot_external_web_server_config_c.html
+        
+        */
+
+        $login =  $this->validarUsuario($_REQUEST['usuario'], $_REQUEST['password']);
+
+        if ($login == true) {
+
+            $xtm = $_REQUEST['xtm'];
 
             // Hash = SHA1(ts + sn + mac + success + sess-timeout + idle_timeout + shared_secret)
             $hash = $_REQUEST['ts'] . $_REQUEST['sn'] .  $_REQUEST['mac'] . 1 . 1200 . 600 . $_ENV['SHARED_SECRET'];
+
+            // Os parâmetros seguem orientações da documentação do watchguard. ELes podem ir com valores padrões ou setados diretamente na configuração do firebox.
+
             $sig = hash("SHA1", $hash);
 
-            $url = "http://10.40.0.1:4106/wgcgi.cgi?action=hotspot_auth&ts={$_REQUEST['ts']}&success=1&sess_timeout=1200&idle_timeout=600&sig=$sig&redirect=https://aridesa.com.br/";
+            $url = "$xtm?action=hotspot_auth&ts={$_REQUEST['ts']}&success=1&sess_timeout=1200&idle_timeout=600&sig=$sig&redirect=https://aridesa.com.br/";
 
 
             return header("Location: $url");
@@ -42,19 +52,9 @@ class AuthSoap extends Controller
         return header('Location: ' . $_SERVER['HTTP_REFERER']);
     }
 
-    protected function validarUsuarioAD($login, $senha)
+    protected function validarUsuario($login, $senha): bool
     {
-        try {
-            $function = 'ValidaLDAP';
-            $arguments = array($function => array('userid' => $login, 'password' => $senha));
-            $result = $this->client->__soapCall($function, $arguments);
-            if ($result->ValidaLDAPResult == 0) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (\Exception $e) {
-            die('Ocorreu um erro no Webservice - ' . $e->getMessage());
-        }
+        //logica de validação de usuario
+        return true;
     }
 }
