@@ -16,6 +16,7 @@
     <input type="hidden" name="sn" value="<?= $sn ?>">
     <input type="hidden" name="mac" value="<?= $mac ?>">
     <input type="hidden" name="mac" value="<?= $xtm ?>">
+    <input type="hidden" name="mac" value="<?= $redirect ?>">
 
     <div class="col-12">
         <button class="btn btn-primary" type="submit">Enviar</button>

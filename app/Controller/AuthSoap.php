@@ -32,6 +32,7 @@ class AuthSoap extends Controller
         if ($login == true) {
 
             $xtm = $_REQUEST['xtm'];
+            $redirect = $_REQUEST['redirect'];
 
             // Hash = SHA1(ts + sn + mac + success + sess-timeout + idle_timeout + shared_secret)
             $hash = $_REQUEST['ts'] . $_REQUEST['sn'] .  $_REQUEST['mac'] . 1 . 1200 . 600 . $_ENV['SHARED_SECRET'];
@@ -40,7 +41,7 @@ class AuthSoap extends Controller
 
             $sig = hash("SHA1", $hash);
 
-            $url = "$xtm?action=hotspot_auth&ts={$_REQUEST['ts']}&success=1&sess_timeout=1200&idle_timeout=600&sig=$sig&redirect=https://aridesa.com.br/";
+            $url = "$xtm?action=hotspot_auth&ts={$_REQUEST['ts']}&success=1&sess_timeout=1200&idle_timeout=600&sig=$sig&redirect=$redirect";
 
 
             return header("Location: $url");

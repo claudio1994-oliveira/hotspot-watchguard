@@ -39,8 +39,8 @@ class Hotspot extends Controller
             'ts' =>  $_GET['ts'],
             'sn' => $_GET['sn'],
             'mac' => $_GET['mac'],
-            'xtm' => $_GET['xtm']
-
+            'xtm' => $_GET['xtm'],
+            'redirect' => $_GET['redirect']
         ]);
     }
 }
