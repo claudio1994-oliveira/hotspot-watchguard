@@ -1,0 +1,30 @@
+version: "3"
+services:
+  php:
+    container_name: hotspot-php
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html/
+      - ./apache_conf/000-default.conf:/etc/apache2/sites-available/000-default.conf
+    links:
+      - db
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.0.2
+    container_name: hotspot-phpmyadmin
+    links:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+    ports:
+      - 8081:80
+  db:
+    container_name: hotspot-db
+    image: mysql:5.7.32
+    ports:
+      - "3308:3308"
+    environment:
+      - MYSQL_ROOT_PASSWORD=default
+      - MYSQL_DATABASE=default
